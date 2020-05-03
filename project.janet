@@ -7,4 +7,4 @@
   :repo "git+https://github.com/pyrmont/bencodobi")
 
 (declare-source
-  :source @["bencodobi.janet"])
+  :source ["bencodobi.janet"])
