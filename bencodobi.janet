@@ -1,24 +1,36 @@
-(defn to-digit [b]
-  (- b 48))
-
-
-(defn is-num? [b]
-  (and (>= b 48) (<= b 57)))
-
-
-(defn is-char? [c b]
-  (-> (string/bytes c) (first) (= b)))
-
-
 # Forward declaration
 (varfn decode [stream &opt indicator])
 
 
-(defn decode-str [stream len]
+(defn- to-digit [b]
+  "Convert `b`, the integer value of a UTF-8 character, into a digit from 0-9"
+  (- b 48))
+
+
+(defn- is-num? [b]
+  "Check whether `b`, the integer value of a UTF-8 character, represents a
+  digit from 0-9"
+  (and (>= b 48) (<= b 57)))
+
+
+(defn- is-char? [c b]
+  "Check whether `b`, the integer value of a UTF-8 character, is equal to a
+  character `c`"
+  (-> (string/bytes c) (first) (= b)))
+
+
+(defn- decode-str [stream len]
+  "Decode a string from a bytestream `stream` of length `len`"
   (string/from-bytes (splice (:read stream len))))
 
 
-(defn decode-nums [stream ending &opt total]
+(defn- decode-nums [stream ending &opt total]
+  "Decode a number from a bytestream `stream` until an `ending`
+
+  Integers are used in two ways in Bencode: (1) the beginning of strings; and
+  (2) in integer values. The two ways correspond to the endings `:` and `e`
+  respectively. The function is called recursively and so can pass an optional
+  `total` that represents the current total."
   (default total 0)
   (let [byte (first (:read stream 1))]
     (cond
@@ -26,10 +38,14 @@
       (is-num? byte)         (decode-nums stream
                                           ending
                                           (+ (* total 10) (to-digit byte)))
-      (error "invalid bencoding"))))
+      (error "invalid bencoding: number"))))
 
 
-(defn decode-list [stream &opt items]
+(defn- decode-list [stream &opt items]
+  "Decode a list from a bytestream `stream`
+
+  This function is called recursively and so can pass an optional `items` that
+  represents the current list of items."
   (default items [])
   (let [byte (first (:read stream 1))]
     (cond
@@ -37,14 +53,22 @@
       (decode-list stream (tuple (splice items) (decode stream byte))))))
 
 
-(defn decode-key [stream byte]
+(defn- decode-key [stream byte]
+  "Decode a dictionary key from a bytestream `stream` with initial `byte`
+
+  This function passes the `byte` so that it can test whether the key is valid."
   (cond
     (is-num? byte) (->> (decode-nums stream ":" (to-digit byte))
                         (decode-str stream))
-    (error "invalid bencoding")))
+    (error "invalid bencoding: dictionary key")))
 
 
-(defn decode-dict [stream &opt items]
+(defn- decode-dict [stream &opt items]
+  "Decode a dictionary from a bytestream `stream`
+
+  This function is called recursively and so can pass an optional `items` that
+  represents the pairs of keys and values. The struct result is not created
+  until the end of the decoding."
   (default items [])
   (let [byte (first (:read stream 1))]
     (cond
@@ -53,6 +77,10 @@
 
 
 (varfn decode [stream &opt indicator]
+  "Decode a bytestream `stream`
+
+  This function is possibly called by the list and dictionary decoding functions
+  and so can be passed an initial `indicator`."
   (let [byte (or indicator (first (:read stream 1)))]
     (cond
       (is-num? byte)      (->> (decode-nums stream ":" (to-digit byte))
@@ -60,54 +88,4 @@
       (is-char? "i" byte) (decode-nums stream "e")
       (is-char? "l" byte) (decode-list stream)
       (is-char? "d" byte) (decode-dict stream)
-      (error "invalid bencoding"))))
-
-
-(def Stream
-  @{:content ""
-    :read (fn [self num_bytes]
-            (let [res (string/slice (self :content) 0 num_bytes)]
-              (put self :content (string/slice (self :content) num_bytes))
-              (string/bytes res)))})
-
-
-(def an-ascii-str
-  (table/setproto @{:content "4:spam"} Stream))
-
-
-(def a-utf8-str
-  (table/setproto @{:content "4:👍"} Stream))
-
-
-(def an-int
-  (table/setproto @{:content "i42e"} Stream))
-
-
-(def an-empty-list
-  (table/setproto @{:content "le"} Stream))
-
-
-(def a-list
-  (table/setproto @{:content "l4:spami42ee"} Stream))
-
-
-(def an-empty-dict
-  (table/setproto @{:content "de"} Stream))
-
-
-(def a-dict
-  (table/setproto @{:content "d3:cow3:moo4:spam4:eggse"} Stream))
-
-
-(def a-nested-coll
-  (table/setproto @{:content "d4:spaml1:a1:bee"} Stream))
-
-
-(pp (decode an-ascii-str))
-(pp (decode a-utf8-str))
-(pp (decode an-int))
-(pp (decode an-empty-list))
-(pp (decode a-list))
-(pp (decode an-empty-dict))
-(pp (decode a-dict))
-(pp (decode a-nested-coll))
+      (error "invalid bencoding: general"))))
