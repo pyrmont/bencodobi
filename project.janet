@@ -1,10 +1,10 @@
 (declare-project
-  :name "benkenobi"
+  :name "bencodobi"
   :description "A bencode library for Janet"
   :author "Michael Camilleri"
   :license "MIT"
-  :url "https://github.com/pyrmont/benkenobi"
-  :repo "git+https://github.com/pyrmont/benkenobi")
+  :url "https://github.com/pyrmont/bencodobi"
+  :repo "git+https://github.com/pyrmont/bencodobi")
 
 (declare-source
-  :source @["benkenobi.janet"])
+  :source @["bencodobi.janet"])
