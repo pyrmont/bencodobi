@@ -8,4 +8,4 @@
   :dependencies ["https://github.com/joy-framework/tester"])
 
 (declare-source
-  :source ["bencodobi.janet"])
+  :source ["src/bencodobi src/bencodobi.janet"])

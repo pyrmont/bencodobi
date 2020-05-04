@@ -1,5 +1,5 @@
 (import tester :prefix "" :exit true)
-(import "../bencodobi" :as bencodobi)
+(import ../src/bencodobi :as bencodobi)
 
 (deftest
 
