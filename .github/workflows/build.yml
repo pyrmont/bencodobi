@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout project
+      uses: actions/checkout@v2
+    - name: find latest version of janet
+      uses: oprypin/find-latest-tag@v1
+      with:
+        repository: janet-lang/janet
+        releases_only: true
+        prefix: 'v'
+      id: janet-ver
+    - name: download janet
+      run: curl -LO https://github.com/janet-lang/janet/releases/download/${{ steps.janet-ver.outputs.tag }}/janet-${{ steps.janet-ver.outputs.tag }}-linux.tar.gz
+    - name: extract janet
+      run: tar -xvzf janet-${{ steps.janet-ver.outputs.tag }}-linux.tar.gz
+    - name: add directory to path
+      run: echo "::add-path::janet-${{ steps.janet-ver.outputs.tag }}-linux"
+    - name: run tests
+      run: /usr/bin/env jpm test
