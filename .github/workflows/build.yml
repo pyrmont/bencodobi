@@ -27,6 +27,8 @@ jobs:
       run: tar -xvzf janet-${{ steps.janet-ver.outputs.tag }}-linux.tar.gz
     - name: add directory to path
       run: echo "::add-path::janet-${{ steps.janet-ver.outputs.tag }}-linux"
+    - name: make modules directory
+      run: mkdir modules
     - name: set JANET_PATH
       run: echo "::set-env name=JANET_PATH::modules"
     - name: install dependencies
