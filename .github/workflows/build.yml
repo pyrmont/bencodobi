@@ -27,5 +27,9 @@ jobs:
       run: tar -xvzf janet-${{ steps.janet-ver.outputs.tag }}-linux.tar.gz
     - name: add directory to path
       run: echo "::add-path::janet-${{ steps.janet-ver.outputs.tag }}-linux"
+    - name: set JANET_PATH
+      run: echo "::set-env JANET_PATH=modules"
+    - name: install dependencies
+      run: /usr/bin/env jpm deps
     - name: run tests
       run: /usr/bin/env jpm test
