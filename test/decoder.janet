@@ -25,6 +25,11 @@
   (is (= 42 (bencodobi/decode an-int)) "decode an integer"))
 
 
+(deftest decode-negative-integer
+  (def an-int (table/setproto @{:content "i-42e"} Stream))
+  (is (= -42 (bencodobi/decode an-int)) "decode a negative integer"))
+
+
 (deftest decode-empty-list
   (def an-empty-list (table/setproto @{:content "le"} Stream))
   (is (= [] (bencodobi/decode an-empty-list)) "decode an empty list"))

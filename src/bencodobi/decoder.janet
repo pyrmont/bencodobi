@@ -7,6 +7,12 @@
   (- b 48))
 
 
+(defn- is-minus? [b]
+  "Check whether `b`, the integer value of a UTF-8 character, represents the
+  minus character"
+  (= b 45))
+
+
 (defn- is-num? [b]
   "Check whether `b`, the integer value of a UTF-8 character, represents a
   digit from 0-9"
@@ -39,6 +45,14 @@
                                           ending
                                           (+ (* total 10) (to-digit byte)))
       (error "invalid bencoding: number"))))
+
+
+(defn- decode-int [stream]
+  "Decode an integer from a bytestream `stream`"
+  (let [byte (first (:read stream 1))]
+    (cond
+      (is-minus? byte) (* -1 (decode-nums stream "e"))
+      (is-num? byte) (decode-nums stream "e" (to-digit byte)))))
 
 
 (defn- decode-list [stream &opt items]
@@ -85,7 +99,7 @@
     (cond
       (is-num? byte)      (->> (decode-nums stream ":" (to-digit byte))
                                (decode-str stream))
-      (is-char? "i" byte) (decode-nums stream "e")
+      (is-char? "i" byte) (decode-int stream)
       (is-char? "l" byte) (decode-list stream)
       (is-char? "d" byte) (decode-dict stream)
       (error "invalid bencoding: general"))))
