@@ -1,5 +1,5 @@
 (declare-project
-  :name "bencodobi"
+  :name "Bencodobi"
   :description "A bencode library for Janet"
   :author "Michael Camilleri"
   :license "MIT"
@@ -8,4 +8,4 @@
   :dependencies ["https://github.com/pyrmont/testament"])
 
 (declare-source
-  :source ["src/bencodobi src/bencodobi.janet"])
+  :source ["src/bencodobi" "src/bencodobi.janet"])
