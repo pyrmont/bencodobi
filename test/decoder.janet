@@ -49,4 +49,5 @@
  (def a-nested-coll (table/setproto @{:content "d4:spaml1:a1:bee"} Stream))
  (is (= {"spam" ["a" "b"]} (bencodobi/decode a-nested-coll)) "decode a nested collection"))
 
+
 (run-tests!)
