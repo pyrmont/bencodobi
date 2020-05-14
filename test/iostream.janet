@@ -23,7 +23,7 @@
 (deftest read-too-much
   (def output @"")
   (def input (stream "hello"))
-  (is (thrown? (:read input 6 output))))
+  (is (thrown? (:read input 6 output)) "read more than in stream"))
 
 
 (run-tests!)
