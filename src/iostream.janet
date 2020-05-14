@@ -32,7 +32,7 @@
     (buffer/blit buf (string/slice str start end) buf-len)))
 
 
-(def- IOStream
+(def- IOReader
   @{:source @""
     :curr 0
     :read (fn [self num-bytes buf]
@@ -50,6 +50,6 @@
 
 (defn stream
   [source]
-  (if (get source :read)
+  (if (and (= :table (type source)) (= IOReader (table/getproto source)))
     source
-    (table/setproto @{:source source} IOStream)))
+    (table/setproto @{:source source} IOReader)))
