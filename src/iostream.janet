@@ -10,13 +10,11 @@
   than are left in the buffer.
   ```
   [in-buf num-bytes out-buf start]
-  # (if (> (+ num-bytes start) (length in-buf))
-  #   (error error-message))
-  (let [in-len   (length in-buf)
-        out-len  (length out-buf)
-        copy-len (if (> (+ num-bytes start) in-len)
-                   (- in-len start) num-bytes)]
-    (buffer/blit out-buf in-buf out-len start copy-len)))
+  (let [in-len  (length in-buf)
+        out-len (length out-buf)
+        end     (if (> (+ num-bytes start) in-len)
+                   (- in-len start) (+ num-bytes start))]
+    (buffer/blit out-buf in-buf out-len start end)))
 
 
 (defn- read-from-string
@@ -27,13 +25,11 @@
   than are left in the string.
   ```
   [str num-bytes buf start]
-  # (if (> (+ num-bytes start) (length str))
-  #   (error error-message))
-  (let [str-len  (length str)
-        buf-len  (length buf)
-        copy-len (if (> (+ num-bytes start) str-len)
-                   (- str-len start) num-bytes)]
-    (buffer/blit buf (string/slice str start (+ start copy-len)) buf-len)))
+  (let [str-len (length str)
+        buf-len (length buf)
+        end     (if (> (+ num-bytes start) str-len)
+                  (- str-len start) (+ num-bytes start))]
+    (buffer/blit buf (string/slice str start end) buf-len)))
 
 
 (def- IOStream
@@ -54,4 +50,6 @@
 
 (defn stream
   [source]
-  (table/setproto @{:source source} IOStream))
+  (if (get source :read)
+    source
+    (table/setproto @{:source source} IOStream)))
