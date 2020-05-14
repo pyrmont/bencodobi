@@ -53,7 +53,7 @@
   Wrap `source` in an `IOReader` unless it is already wrapped
 
   The IOReader prototype is a stream reading abstraction that allows objects
-  to respond to a `:read` function call"
+  to respond to a `:read` function call".
   ```
   [source]
   (if (and (= :table (type source)) (= IOReader (table/getproto source)))
