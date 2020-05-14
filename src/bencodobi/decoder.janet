@@ -1,5 +1,23 @@
+(def single (buffer/new 1))
+(def multi (buffer/new 1))
+
+
 # Forward declaration
 (varfn decode [stream &opt indicator])
+
+
+(defn- read-byte
+  "Read a single byte from `stream`"
+  [stream]
+  (buffer/clear single)
+  (-> (:read stream 1 single) (get 0)))
+
+
+(defn- read-bytes
+  "Read `n` bytes from `stream`"
+  [stream n]
+  (buffer/clear multi)
+  (-> (:read stream n multi) (string)))
 
 
 (defn- to-digit [b]
@@ -21,7 +39,7 @@
 
 (defn- decode-str [stream len]
   "Decode a string from a bytestream `stream` of length `len`"
-  (string/from-bytes (splice (:read stream len))))
+  (string (read-bytes stream len)))
 
 
 (defn- decode-nums [stream ending &opt total]
@@ -32,7 +50,7 @@
   respectively. The function is called recursively and so can pass an optional
   `total` that represents the current total."
   (default total 0)
-  (let [byte (first (:read stream 1))]
+  (let [byte (read-byte stream)]
     (cond
       (is-char? ending byte) total
       (is-num? byte)         (decode-nums stream
@@ -47,7 +65,7 @@
   This function is called recursively and so can pass an optional `items` that
   represents the current list of items."
   (default items [])
-  (let [byte (first (:read stream 1))]
+  (let [byte (read-byte stream)]
     (cond
       (is-char? "e" byte) items
       (decode-list stream (tuple (splice items) (decode stream byte))))))
@@ -70,7 +88,7 @@
   represents the pairs of keys and values. The struct result is not created
   until the end of the decoding."
   (default items [])
-  (let [byte (first (:read stream 1))]
+  (let [byte (read-byte stream)]
     (cond
       (is-char? "e" byte) (struct (splice items))
       (decode-dict stream (tuple (splice items) (decode-key stream byte) (decode stream))))))
@@ -81,7 +99,7 @@
 
   This function is possibly called by the list and dictionary decoding functions
   and so can be passed an initial `indicator`."
-  (let [byte (or indicator (first (:read stream 1)))]
+  (let [byte (or indicator (read-byte stream))]
     (cond
       (is-num? byte)      (->> (decode-nums stream ":" (to-digit byte))
                                (decode-str stream))
