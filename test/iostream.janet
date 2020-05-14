@@ -20,4 +20,10 @@
   (is (= "h" (string output)) "read first byte from a string"))
 
 
+(deftest read-too-much
+  (def output @"")
+  (def input (stream "hello"))
+  (is (thrown? (:read input 6 output))))
+
+
 (run-tests!)
