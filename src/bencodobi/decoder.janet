@@ -74,7 +74,7 @@
 (defn- decode-int
   "Decode an integer from a bytestream `stream`"
   [stream]
-  (let [byte (first (:read stream 1))]
+  (let [byte (read-byte stream)]
     (cond
       (is-minus? byte) (* -1 (decode-nums stream "e"))
       (is-num? byte) (decode-nums stream "e" (to-digit byte)))))
