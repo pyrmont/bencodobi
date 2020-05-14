@@ -11,8 +11,9 @@
 
 (defn read-from-string
   (str num-bytes buf start)
-  (let [buf-len (length buf)]
-    (buffer/blit buf (string/slice str num-bytes start) buf-len)))
+  (let [buf-len (length buf)
+        to-copy (string/slice str start (+ start num-bytes))]
+    (buffer/blit buf to-copy buf-len)))
 
 
 (def IOStream
@@ -29,6 +30,8 @@
               (read-from-buffer (self :source) num-bytes buf (self :curr))
 
               :string
-              (read-from-string (self :source) num-bytes buf (self :curr)))
+              (read-from-string (self :source) num-bytes buf (self :curr))
+
+              (break (:read (self :source) num-bytes buf)))
             (put self :curr (+ (self :curr) num-bytes))
             buf)})
