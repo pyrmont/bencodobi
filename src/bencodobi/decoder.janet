@@ -1,3 +1,6 @@
+(import ../iostream :as io)
+
+
 (def single (buffer/new 1))
 (def multi (buffer/new 1))
 
@@ -119,12 +122,13 @@
 
 
 (varfn decode
-  "Decode a bytestream `stream`
+  "Decode `input`
 
   This function is possibly called by the list and dictionary decoding functions
   and so can be passed an initial `indicator`."
-  [stream &opt indicator]
-  (let [byte (or indicator (read-byte stream))]
+  [input &opt indicator]
+  (let [stream (io/reader input)
+        byte   (or indicator (read-byte stream))]
     (cond
       (is-num? byte)      (->> (decode-nums stream ":" (to-digit byte))
                                (decode-str stream))
