@@ -19,6 +19,7 @@
   (buffer/clear multi)
   (-> (:read stream n multi) (string)))
 
+
 (defn- to-digit
   "Convert `b`, the integer value of a UTF-8 character, into a digit from 0-9"
   [b]
