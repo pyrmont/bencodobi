@@ -48,7 +48,7 @@
             buf)})
 
 
-(defn stream
+(defn reader
   [source]
   (if (and (= :table (type source)) (= IOReader (table/getproto source)))
     source
