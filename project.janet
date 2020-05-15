@@ -8,4 +8,4 @@
   :dependencies ["https://github.com/pyrmont/testament"])
 
 (declare-source
-  :source ["src/bencodobi" "src/bencodobi.janet"])
+  :source ["src/bencodobi" "src/bencodobi.janet" "src/iostream.janet"])
