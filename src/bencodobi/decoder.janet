@@ -1,12 +1,12 @@
 (import ../iostream :as io)
 
 
-(def single (buffer/new 1))
-(def multi (buffer/new 1))
+(def- single (buffer/new 1))
+(def- multi (buffer/new 1))
 
 
 # Forward declaration
-(varfn decode [stream &opt indicator])
+(varfn decode [input &opt indicator])
 
 
 (defn- read-byte
