@@ -53,9 +53,41 @@
   Wrap `source` in an `IOReader` unless it is already wrapped
 
   The IOReader prototype is a stream reading abstraction that allows objects
-  to respond to a `:read` function call".
+  to respond to a `:read` function call.
   ```
   [source]
   (if (and (= :table (type source)) (= IOReader (table/getproto source)))
     source
     (table/setproto @{:source source} IOReader)))
+
+
+(defn- write-to-buffer
+  ```
+  Copy `bytes` to `buf`
+  ```
+  [buf bytes]
+  (each byte bytes
+    (buffer/push-byte buf byte)))
+
+
+(def- IOWriter
+  @{:dest @""
+    :write (fn [self bytes]
+             (case (type (self :dest))
+               :buffer
+               (write-to-buffer (self :dest) bytes)
+
+               (:write (self :dest) bytes))
+             nil)})
+
+(defn writer
+  ```
+  Wrap `dest` in an `IOWriter` unless it is already wrapped
+
+  The IOWriter prototype is a stream writing abstraction that allows objects
+  to respond to a `:write` function call.
+  ```
+  [dest]
+  (if (and (= :table (type dest)) (= IOWriter (table/getproto dest)))
+    dest
+    (table/setproto @{:dest dest} IOWriter)))

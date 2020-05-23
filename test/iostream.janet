@@ -40,4 +40,27 @@
   (is (= "hello" (string output)) "read more than in reader"))
 
 
+(deftest forget-writer
+  (def output @"")
+  (def input @"hello")
+  (is (thrown? (:write output input)) "forget to create a reader from a buffer"))
+
+
+(deftest write-file
+  (def file (file/temp))
+  (def output (io/writer file))
+  (:write output "hello")
+  (file/seek file :set 0)
+  (def content (file/read file :all))
+  (file/close file)
+  (is (= "hello" (string content)) "read from a file"))
+
+
+(deftest write-buffer
+  (def buf @"")
+  (def output (io/writer buf))
+  (:write output "hello")
+  (is (= "hello" (string buf)) "read first byte from a buffer"))
+
+
 (run-tests!)

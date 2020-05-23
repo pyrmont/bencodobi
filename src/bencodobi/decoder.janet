@@ -57,12 +57,14 @@
 
 
 (defn- decode-nums
-  "Decode a number from a bytestream `stream` until an `ending`
+  ```
+  Decode a number from a bytestream `stream` until an `ending`
 
   Integers are used in two ways in Bencode: (1) the beginning of strings; and
   (2) in integer values. The two ways correspond to the endings `:` and `e`
   respectively. The function is called recursively and so can pass an optional
-  `total` that represents the current total."
+  `total` that represents the current total.
+  ```
   [stream ending &opt total]
   (default total 0)
   (let [byte (read-byte stream)]
@@ -84,10 +86,12 @@
 
 
 (defn- decode-list
-  "Decode a list from a bytestream `stream`
+  ```
+  Decode a list from a bytestream `stream`
 
   This function is called recursively and so can pass an optional `items` that
-  represents the current list of items."
+  represents the current list of items.
+  ```
   [stream &opt items]
   (default items [])
   (let [byte (read-byte stream)]
@@ -97,9 +101,11 @@
 
 
 (defn- decode-key
-  "Decode a dictionary key from a bytestream `stream` with initial `byte`
+  ```
+  Decode a dictionary key from a bytestream `stream` with initial `byte`
 
-  This function passes the `byte` so that it can test whether the key is valid."
+  This function passes the `byte` so that it can test whether the key is valid.
+  ```
   [stream byte]
   (cond
     (is-num? byte) (->> (decode-nums stream ":" (to-digit byte))
@@ -108,11 +114,13 @@
 
 
 (defn- decode-dict
-  "Decode a dictionary from a bytestream `stream`
+  ```
+  Decode a dictionary from a bytestream `stream`
 
   This function is called recursively and so can pass an optional `items` that
   represents the pairs of keys and values. The struct result is not created
-  until the end of the decoding."
+  until the end of the decoding.
+  ```
   [stream &opt items]
   (default items [])
   (let [byte (read-byte stream)]
@@ -122,10 +130,12 @@
 
 
 (varfn decode
-  "Decode `input`
+  ```
+  Decode `input`
 
   This function is possibly called by the list and dictionary decoding functions
-  and so can be passed an initial `indicator`."
+  and so can be passed an initial `indicator`.
+  ```
   [input &opt indicator]
   (let [stream (io/reader input)
         byte   (or indicator (read-byte stream))]
