@@ -58,20 +58,6 @@
   (is (= "i-42e" (string output))))
 
 
-(deftest encode-negative-integer
-  (def output @"")
-  (def val -42)
-  (bencodobi/encode output val)
-  (is (= "i-42e" (string output))))
-
-
-(deftest encode-negative-integer
-  (def output @"")
-  (def val -42)
-  (bencodobi/encode output val)
-  (is (= "i-42e" (string output))))
-
-
 (deftest encode-an-empty-tuple
   (def output @"")
   (def val [])
