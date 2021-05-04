@@ -138,7 +138,7 @@
 (deftest encode-a-struct-with-nonstring-keys
   (def output @"")
   (def val {1 "one" 2 "two" 3 "three"})
-  (def message "invalid input: {3 \"three\" 2 \"two\" 1 \"one\"} is unsupported type")
+  (def message "invalid input: {1 \"one\" 2 \"two\" 3 \"three\"} is unsupported type")
   (is (thrown? message (bencodobi/encode output val))))
 
 
