@@ -1,11 +1,10 @@
 # Bencodobi API
 
-[bencodobi/decode](#bencodobidecode)
-, [bencodobi/encode](#bencodobiencode)
-, [iostream/reader](#iostreamreader)
-, [iostream/writer](#iostreamwriter)
+## bencodobi
 
-## bencodobi/decode
+[decode](#decode), [encode](#encode)
+
+## decode
 
 **function**  | [source][1]
 
@@ -20,7 +19,7 @@ and so can be passed an initial `indicator`.
 
 [1]: src/bencodobi/decoder.janet#L132
 
-## bencodobi/encode
+## encode
 
 **function**  | [source][2]
 
@@ -34,7 +33,11 @@ This function will throw an error if `val` is not a valid value for bencoding.
 
 [2]: src/bencodobi/encoder.janet#L105
 
-## iostream/reader
+## iostream
+
+[reader](#reader), [writer](#writer)
+
+## reader
 
 **function**  | [source][3]
 
@@ -49,7 +52,7 @@ to respond to a `:read` function call.
 
 [3]: src/iostream.janet#L51
 
-## iostream/writer
+## writer
 
 **function**  | [source][4]
 
