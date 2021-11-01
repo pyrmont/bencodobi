@@ -10,48 +10,62 @@
 
 
 (defn- read-byte
-  "Read a single byte from `stream`"
+  ```
+  Read a single byte from `stream`
+  ```
   [stream]
   (buffer/clear single)
   (-> (:read stream 1 single) (get 0)))
 
 
 (defn- read-bytes
-  "Read `n` bytes from `stream`"
+  ```
+  Read `n` bytes from `stream`
+  ```
   [stream n]
   (buffer/clear multi)
   (-> (:read stream n multi) (string)))
 
 
 (defn- to-digit
-  "Convert `b`, the integer value of a UTF-8 character, into a digit from 0-9"
+  ```
+  Convert `b`, the integer value of a UTF-8 character, into a digit from 0-9
+  ```
   [b]
   (- b 48))
 
 
 (defn- is-minus?
-  "Check whether `b`, the integer value of a UTF-8 character, represents the
-  minus character"
+  ```
+  Check whether `b`, the integer value of a UTF-8 character, represents the
+  minus character
+  ```
   [b]
   (= b 45))
 
 
 (defn- is-num?
-  "Check whether `b`, the integer value of a UTF-8 character, represents a
-  digit from 0-9"
+  ```
+  Check whether `b`, the integer value of a UTF-8 character, represents a
+  digit from 0-9
+  ```
   [b]
   (and (>= b 48) (<= b 57)))
 
 
 (defn- is-char?
-  "Check whether `b`, the integer value of a UTF-8 character, is equal to a
-  character `c`"
+  ```
+  Check whether `b`, the integer value of a UTF-8 character, is equal to a
+  character `c`
+  ```
   [c b]
   (-> (string/bytes c) (first) (= b)))
 
 
 (defn- decode-str
-  "Decode a string from a bytestream `stream` of length `len`"
+  ```
+  Decode a string from a bytestream `stream` of length `len`
+  ```
   [stream len]
   (string (read-bytes stream len)))
 
@@ -77,7 +91,9 @@
 
 
 (defn- decode-int
-  "Decode an integer from a bytestream `stream`"
+  ```
+  Decode an integer from a bytestream `stream`
+  ```
   [stream]
   (let [byte (read-byte stream)]
     (cond
